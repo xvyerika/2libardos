@@ -1,0 +1,21 @@
+{
+  "name": "2 Libardos Eventos",
+  "short_name": "2 Libardos",
+  "description": "Sistema de gestión de eventos animados",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#a3ea15",
+  "icons": [
+    {
+      "src": "./logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

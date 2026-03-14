@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2 Libardos - Animación de Eventos</title>
+    <meta name="description" content="Sistema de gestión de eventos para 2 Libardos: Fiestas Infantiles, Matrimonios, XV Años y más.">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./manifest.json">
+</head>
+<body>
+    <!-- Splash Screen Bienvenida -->
+    <div class="splash-screen">
+        <div class="splash-content">
+            <img src="./logo.png" alt="2 Libardos Logo" class="splash-logo">
+            <h1 class="splash-title">2 Libardos</h1>
+            <p class="splash-subtitle">Preparando la Diversión...</p>
+        </div>
+    </div>
+
+    <!-- Background Animation Elements -->
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
+
+    <main class="dashboard-container glass-panel">
+        
+        <header class="dashboard-header animate-slide-down">
+            <div class="brand-section">
+                <div class="logo-container">
+                    <img src="./logo.png" alt="2 Libardos Logo" class="brand-logo floating">
+                </div>
+                <div class="brand-titles">
+                    <h1>2 Libardos</h1>
+                    <p class="subtitle">Gestión de Eventos Épicos</p>
+                </div>
+            </div>
+
+            <div class="actions-section">
+                <button class="btn btn-primary interactive" id="btn-add-event">
+                    <i class="fa-solid fa-plus-circle"></i> Nuevo Evento
+                </button>
+                <button class="btn btn-secondary interactive" id="btn-export-db">
+                    <i class="fa-solid fa-download"></i> Respaldo
+                </button>
+                <!-- Hidden File Input for Restore -->
+                <input type="file" id="file-import-db" accept=".json" style="display:none;">
+                <button class="btn btn-secondary interactive" id="btn-import-db">
+                    <i class="fa-solid fa-upload"></i> Restaurar
+                </button>
+            </div>
+        </header>
+
+        <!-- Events List Section -->
+        <section class="events-board animate-fade-in-up">
+            <div class="board-header">
+                <h2><i class="fa-regular fa-calendar-check text-highlight"></i> Próximos Eventos</h2>
+                <div class="filter-group">
+                    <select id="event-type-filter" class="custom-select interactive">
+                        <option value="all">Ver Todos</option>
+                        <option value="infantil">Fiesta Infantil</option>
+                        <option value="matrimonio">Matrimonios</option>
+                        <option value="xv">XV Años</option>
+                        <option value="revelacion">Revelación de Sexo</option>
+                        <option value="babyshower">Baby Shower</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="events-grid" id="events-grid">
+                <!-- Event Cards are generated via JS -->
+                 <div class="empty-state">
+                     <i class="fa-regular fa-folder-open spinner"></i>
+                     <p>Cargando tus eventos increíbles...</p>
+                 </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Charly Sánchez -->
+    <footer class="site-footer">
+        <p>Desarrollado con <i class="fa-solid fa-heart text-highlight"></i> por <strong>Charly Sánchez</strong></p>
+    </footer>
+
+    <!-- Modal para Agregar/Editar Evento -->
+    <div class="modal-overlay hidden" id="event-modal">
+        <div class="modal glass-panel interactive-modal">
+            <div class="modal-header">
+                <h3 id="modal-title">Agendar Nuevo Evento</h3>
+                <button class="close-btn interactive" id="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form id="event-form" class="modal-body">
+                <input type="hidden" id="event-id">
+                
+                <div class="form-group">
+                    <label for="event-client"><i class="fa-solid fa-user"></i> Cliente / Festejado</label>
+                    <input type="text" id="event-client" class="custom-input" placeholder="Ej. Familia Rodríguez" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="event-type"><i class="fa-solid fa-masks-theater"></i> Tipo de Evento</label>
+                        <select id="event-type" class="custom-input" required>
+                            <option value="infantil">Fiesta Infantil</option>
+                            <option value="matrimonio">Matrimonios</option>
+                            <option value="xv">XV Años</option>
+                            <option value="revelacion">Revelación de Sexo</option>
+                            <option value="babyshower">Baby Shower</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-date"><i class="fa-solid fa-calendar-day"></i> Fecha</label>
+                        <input type="date" id="event-date" class="custom-input" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="event-time"><i class="fa-solid fa-clock"></i> Hora</label>
+                        <input type="time" id="event-time" class="custom-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-package"><i class="fa-solid fa-box-open"></i> Paquete de Animación</label>
+                        <input type="text" id="event-package" class="custom-input" placeholder="Ej. Paquete Premium" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-location"><i class="fa-solid fa-location-dot"></i> Lugar del Evento</label>
+                    <input type="text" id="event-location" class="custom-input" placeholder="Dirección o Salón" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-notes"><i class="fa-solid fa-comment-dots"></i> Notas Adicionales</label>
+                    <textarea id="event-notes" class="custom-input" rows="3" placeholder="Detalles extra, temáticas, requerimientos..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary pulse-btn" id="btn-save-event">Guardar Evento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="./app.js"></script>
+    <script>
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(registration => {
+                    console.log('SW registered: ', registration);
+                }).catch(registrationError => {
+                    console.log('SW registration failed: ', registrationError);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
