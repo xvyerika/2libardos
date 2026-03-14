@@ -75,6 +75,7 @@
        const newEvent = {
            id: currentEditId ? currentEditId : Date.now().toString(),
            client: document.getElementById('event-client').value,
+           phone: document.getElementById('event-phone').value,
            type: document.getElementById('event-type').value,
            date: document.getElementById('event-date').value,
            time: document.getElementById('event-time').value,
@@ -107,6 +108,7 @@
        modalTitle.innerText = "Editar Evento";
        
        document.getElementById('event-client').value = ev.client;
+       document.getElementById('event-phone').value = ev.phone || '';
        document.getElementById('event-type').value = ev.type;
        document.getElementById('event-date').value = ev.date;
        document.getElementById('event-time').value = ev.time;
@@ -171,12 +173,14 @@
                <div class="event-card-header">
                    <span class="event-type-badge badge-${ev.type}">${typeLabel}</span>
                    <div class="event-actions">
+                       <button class="action-btn" title="Recordatorio WhatsApp" onclick="sendReminder('${ev.id}')" style="color: #25D366;"><i class="fa-brands fa-whatsapp"></i></button>
                        <button class="action-btn edit-btn" onclick="editEvent('${ev.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
                        <button class="action-btn del-btn" onclick="deleteEvent('${ev.id}')"><i class="fa-solid fa-trash-can"></i></button>
                    </div>
                </div>
                <h3 class="event-title">${ev.client}</h3>
                <div class="event-details">
+                   <span><i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> ${ev.phone || 'S/N'}</span>
                    <span><i class="fa-solid fa-calendar"></i> ${dateStr} - ${ev.time}Hrs</span>
                    <span><i class="fa-solid fa-location-dot"></i> ${ev.location}</span>
                    <span><i class="fa-solid fa-cube"></i> ${ev.package}</span>
@@ -186,6 +190,28 @@
        });
    }
    
+   // Send Reminder
+   window.sendReminder = function(id) {
+       const ev = eventsList.find(x => x.id === id);
+       if(!ev || !ev.phone) {
+           showToast('El evento no tiene número de celular registrado.', 'error');
+           return;
+       }
+
+       const dateObj = new Date(ev.date + 'T' + ev.time);
+       const formatter = new Intl.DateTimeFormat('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+       const dateStr = formatter.format(dateObj);
+
+       let phoneStr = ev.phone.replace(/[\s\-]/g, '');
+       let message = `¡Hola *${ev.client}*! 🎉\n\nTe escribe *2 Libardos Animación*. Queremos recordarte tener todo listo para tu evento (*${ev.type.toUpperCase()}*):\n\n📅 *Fecha:* ${dateStr}\n⏰ *Hora:* ${ev.time}\n📍 *Lugar:* ${ev.location}\n🎁 *Paquete:* ${ev.package}\n\n¡Estamos listos para llevar la mejor diversión! 🎈✨`;
+
+       const encodedMsg = encodeURIComponent(message);
+       const waUrl = `https://wa.me/${phoneStr}?text=${encodedMsg}`;
+       
+       window.open(waUrl, '_blank');
+       showToast('Abriendo WhatsApp...');
+   };
+
    // Modal State Operations
    function openModal() {
        modalOverlay.classList.remove('hidden');
